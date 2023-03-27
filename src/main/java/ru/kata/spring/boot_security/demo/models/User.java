@@ -26,9 +26,12 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "name")
+    @Column(name = "firstname")
     @Size(min = 2, max = 30, message = "firstName should be between 2 and 30 characters")
     private String firstName;
+    @Column(name = "lastname")
+    @Size(min = 2, max = 30, message = "firstName should be between 2 and 30 characters")
+    private String lastName;
     @Column(name = "age")
     @Min(value = 0, message = "Age > 0")
     private Integer age;
@@ -40,18 +43,15 @@ public class User implements UserDetails {
     @Column(name = "password")
     private String password;
 
-    @Column(name = "login")
-    private String username;
-
     public User() {
     }
 
-    public User(String firstName, Integer age, String email, String username, String password) {
+    public User(String firstName, String lastName, Integer age, String email, String password) {
         this.firstName = firstName;
         this.age = age;
         this.email = email;
-        this.username = username;
         this.password = password;
+        this.lastName = lastName;
     }
 
 
@@ -67,7 +67,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return this.username;
+        return this.email;
     }
 
     @Override

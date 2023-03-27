@@ -1,31 +1,22 @@
 package ru.kata.spring.boot_security.demo.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.kata.spring.boot_security.demo.models.Role;
 import ru.kata.spring.boot_security.demo.models.User;
-import ru.kata.spring.boot_security.demo.repositories.RoleRepository;
 import ru.kata.spring.boot_security.demo.repositories.UserRepository;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
-@Transactional(readOnly = true)
 public class UserServiceImp implements UserService, UserDetailsService {
     private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
-
-    @Autowired
-    public UserServiceImp(UserRepository userRepository, RoleRepository roleRepository) {
+    private final PasswordEncoder passwordEncoder;
+    public UserServiceImp(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public User findByUsername(String username) {
@@ -42,24 +33,18 @@ public class UserServiceImp implements UserService, UserDetailsService {
     }
 
     @Transactional
-    public void saveUser(User user, String role) {
+    public void saveUser(User user) {
         User userFromDb = userRepository.findByUsername(user.getUsername());
-        if (userFromDb != null) {
-            return;
-        }
-        Set<Role> roles = new HashSet<>();
-        roles.add(roleRepository.findRoleByRole(role));
-
-        user.setRoles(roles);
+        if (userFromDb != null) return;
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
     }
 
     @Transactional
-    public void updateUser(long id, User updatedUser, String role) {
+    public void updateUser(long id, User updatedUser) {
+        if (userRepository.findByUsername(updatedUser.getUsername()) != null) return;
         updatedUser.setId(id);
-        Set<Role> roles = new HashSet<>();
-        roles.add(roleRepository.findRoleByRole(role));
-        updatedUser.setRoles(roles);
+        updatedUser.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
         userRepository.save(updatedUser);
     }
 
@@ -77,6 +62,6 @@ public class UserServiceImp implements UserService, UserDetailsService {
 
         return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), user.getAuthorities());
     }
-
-
 }
+
+
