@@ -14,15 +14,14 @@
 <nav class="navbar navbar-expand-xl navbar-dark bg-dark">
     <div class="container-fluid mr-auto">
                 <span class="navbar-brand">
-                    <strong th:text="${#authentication.getName()}"></strong>
-                    <span>
-                        <a th:text="' with roles: ' + ${#strings.setJoin(#authentication.getAuthorities(), ' ')}"></a>
-                    </span>
+                    <strong id="header-username"></strong>
+                    <a> with roles: </a>
+                    <a id="header-roles"></a>
                 </span>
     </div>
     <span class="nav-item ms-auto">
         <form th:action="@{/logout}" method="POST">
-            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+<!--            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>-->
             <input type="submit" class="btn btn-link text-secondary" value="Logout"/>
         </form>
     </span>
@@ -65,16 +64,7 @@
                                             <th>Role</th>
                                         </tr>
                                         </thead>
-                                        <tbody>
-                                        <tr>
-                                            <td th:utext="${currentUser.id}"></td>
-                                            <td th:utext="${currentUser.firstName}"></td>
-                                            <td th:utext="${currentUser.lastName}"></td>
-                                            <td th:utext="${currentUser.age}"></td>
-                                            <td th:utext="${currentUser.email}"></td>
-                                            <td th:utext="${#strings.setJoin(currentUser.roles, ' ')}"></td>
-                                        </tr>
-                                        </tbody>
+                                        <tbody id="user-panel-tbody"></tbody>
                                     </table>
                                 </div>
                             </div>
@@ -96,6 +86,6 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
         crossorigin="anonymous"></script>
-
+<script type="text/javascript" src="/userPage.js"></script>
 </body>
 </html>

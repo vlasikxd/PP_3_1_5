@@ -6,6 +6,7 @@ import ru.kata.spring.boot_security.demo.models.Role;
 import ru.kata.spring.boot_security.demo.models.User;
 import ru.kata.spring.boot_security.demo.repositories.RoleRepository;
 import ru.kata.spring.boot_security.demo.repositories.UserRepository;
+
 import javax.annotation.PostConstruct;
 import java.util.HashSet;
 import java.util.Set;
@@ -24,16 +25,17 @@ public class UsersInit {
     public void createAdmin() {
         Role role1 = new Role("ROLE_ADMIN");
         Role role2 = new Role("ROLE_USER");
-
-        roleRepository.save(role1);
-        roleRepository.save(role2);
+        if (roleRepository.findRoleByRole(role1.getRole()) == null) roleRepository.save(role1);
+        if (roleRepository.findRoleByRole(role2.getRole()) == null) roleRepository.save(role2);
 
         User admin = new User(null, null, null, "admin@1.ru",
                 new BCryptPasswordEncoder().encode("admin"));
         admin.setRoles(new HashSet<>(Set.of(role1, role2)));
-        userRepository.save(admin);
+        if (userRepository.findByUsername(admin.getUsername()) == null) {
+            userRepository.save(admin);
+        }
     }
-
 }
+
 
 

@@ -8,12 +8,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.kata.spring.boot_security.demo.models.User;
 import ru.kata.spring.boot_security.demo.repositories.UserRepository;
+
 import java.util.*;
 
 @Service
 public class UserServiceImp implements UserService, UserDetailsService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+
     public UserServiceImp(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
@@ -41,11 +43,11 @@ public class UserServiceImp implements UserService, UserDetailsService {
     }
 
     @Transactional
-    public void updateUser(long id, User updatedUser) {
-        if (userRepository.findByUsername(updatedUser.getUsername()) != null) return;
-        updatedUser.setId(id);
-        updatedUser.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
-        userRepository.save(updatedUser);
+    public void updateUser(User user) {
+        if (!user.getPassword().equals(getUserById(user.getId()).getPassword())) {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+        }
+        userRepository.save(user);
     }
 
     @Transactional

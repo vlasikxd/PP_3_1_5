@@ -32,7 +32,7 @@ public class Role implements GrantedAuthority {
     }
 @Override
     public String toString() {
-        if (role.startsWith("ROLE_"))
+        if (role!=null && role.startsWith("ROLE_" ))
             return role.replaceFirst("ROLE_", "");
         return role;
     }
