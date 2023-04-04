@@ -1,13 +1,14 @@
 package ru.kata.spring.boot_security.demo.models;
 
-import lombok.Data;
-import lombok.ToString;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import javax.persistence.*;
 import java.util.Set;
 
 @Entity
-@Data
+@Getter
+@Setter
 @Table(name = "roles")
 public class Role implements GrantedAuthority {
     @Id
@@ -17,7 +18,6 @@ public class Role implements GrantedAuthority {
     private String role;
     @Transient
     @ManyToMany(mappedBy = "roles")
-    @ToString.Exclude
     private Set<User> users;
 
     public Role() {}
@@ -30,7 +30,7 @@ public class Role implements GrantedAuthority {
     public String getAuthority() {
         return role;
     }
-@Override
+    @Override
     public String toString() {
         if (role!=null && role.startsWith("ROLE_" ))
             return role.replaceFirst("ROLE_", "");
